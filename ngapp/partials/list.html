@@ -1,0 +1,64 @@
+ <p>
+<h2>AngularJS | Large Dataset Performance Demo</h3>
+ </p>
+ <p>
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Dataset Configuration</h3>
+  </div>
+  <div class="panel-body">
+    Dataset size: {{ total_records_dataset }}
+  </div>
+   <ul class="list-group">
+    <li class="list-group-item">
+      Search:<br/>
+      <input type="text" class="form-control" ng-model="searchTerm" class="form-control" placeholder="Enter Keyword">
+      
+      </li>
+      <li class="list-group-item">
+        Sort:<br/>
+        <select name="sortby" id="sortby" ng-model="sortBy">
+        <option value="">Sort By</option>
+        <option value="id">ID</option>
+        <option value="name">Name</option>
+        <option value="email">Email</option>
+        <option value="company">Company</option>
+        <option value="state">State</option>
+      </select>
+      </li>
+      <li class="list-group-item">Library<br/>
+         <label class="radio-inline"><input type="checkbox" value="1" name="lodash" ng-model="useLodash">Use lodash.js for searching / sorting</label>
+      </li>
+      <li class="list-group-item" ng-if="data_execution_time">
+        Total execution time (searching and sorting): {{ data_execution_time }}
+      </li>
+    </ul>
+</div>
+      <a class="btn btn-primary" role="button" ng-click="performSearch()">Refresh Data</a>
+  </p>
+ <p>Displaying {{ data_records.length }} of {{ total_records }} records.
+</p>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>State</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd gradeX" ng-repeat="entity in data_records">
+            <td>{{ entity.id }}</td>
+            <td>{{ entity.firstName }} {{ entity.lastName }}</td>
+            <td>{{ entity.email }}</td>
+            <td>{{ entity.company }}</td>
+            <td>{{ entity.state }}</td>
+        </tr>
+    </tbody>
+</table>
+<p>
+   <a class="btn btn-primary" role="button" ng-click="paginateResultSet()" ng-if="hasMoreData">Load More</a>
+</p>
