@@ -1,5 +1,5 @@
-# angularjs-large-dataset-performance
-AngularJS Large Dataset Performance Demo. The project contains sample data files as well as the data file generator script (generate-records.py). The NG app simply displays data and allows the user to search/sort the dataset.
+# AngularJS Large Dataset Performance Demo
+ The project contains sample data files as well as the data file generator script (generate-records.py). The NG app simply displays data and allows the user to search/sort the dataset.
 
 The dataset is in the following format:
 [
