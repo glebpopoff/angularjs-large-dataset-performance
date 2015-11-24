@@ -73,7 +73,7 @@ angularJSBigDataControllers.controller('ListCtrl', ['$scope', '$rootScope', 'App
                     if ($scope.searchTerm && $scope.searchTerm.length > 0)
                     {
                         $scope.filtered_data = [];
-                        if ($scope.useLodash)
+                        if (!$scope.useLodash)
                         {
                             for (var i=0;i<$scope.entire_dataset.length;i++)
                             {   var tmpObj = $scope.entire_dataset[i];
