@@ -1,17 +1,17 @@
 var angularJSBigDataServices = angular.module('angularJSBigDataServices', ['ngResource']);
 
 /**
-* Get Data
+* Get Data from WS
 */
 angularJSBigDataServices.factory('AppDataService',['$http', function ($http) {
-	var doRequest = function (data) {
+	var doRequest = function (datafile) {
 	
-    var url = '/data/data-file-min.json?' + APP_CACHE_SID;
+    var file = (datafile && datafile != '') ? datafile : 'data-file-min.json';
+    var url = '/data/' + file + '?' + APP_CACHE_SID;
     window.log('service', 'AppDataService: calling service \'' + url + '\'');
     var promise = $http({
             method: 'GET',
             url: url,
-            data: data, // pass in data as strings
             headers: {
                 'Content-Type': 'application/json'
             } // set the headers so angular passing info as form data (not request payload)
@@ -20,8 +20,8 @@ angularJSBigDataServices.factory('AppDataService',['$http', function ($http) {
     };
     
     return {
-        getData: function (data) {
-            return doRequest(data);
+        getData: function (datafile) {
+            return doRequest(datafile);
         },
     };
 

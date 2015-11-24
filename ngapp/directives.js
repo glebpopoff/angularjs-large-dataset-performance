@@ -1,28 +1,30 @@
 var angularJSBigDataDirectives = angular.module('angularJSBigDataDirectives', ['ngResource']);
 
-/*
-* Directive to format date & time directive
-* Usage: <span metro-north-date-formatter="JS-DATE-OBJECT"></span>
+/**
+* Loading indicator directive.
+* Usage: <div ui-loading-indicator class="well" title="Please wait...loading data."> </div>
 */
-angularJSBigDataDirectives.directive('metroNorthDateFormatter', function () {
-		
-		return {
-		  	restrict: "A",
-			template: "",
-			link: function (scope, element, attrs) {
-				var d = new Date(0);
-                d.setUTCSeconds(attrs["metroNorthDateFormatter"]);
-                var hours = d.getHours();
-                var minutes = d.getMinutes();
+angularJSBigDataDirectives.directive("uiLoadingIndicator", function() {
+    window.log('directive', 'uiLoadingIndicator: setting up the \'ui-loading-indicator\' directive');
+    return {
+        restrict : "A",
+        template: " ",
+        link : function(scope, element, attrs) {
+            scope.$on("loading-started", function(e) {
+                element.css({"display" : ""});
+                //the actual message is passed through the "title" attribute
+                element.html("<img src='images/ajax-loader.gif' />&nbsp;Please wait...loading data.");
+            });
 
-                var ampm = (hours >= 12) ? 'pm' : 'am';
-				hours = hours % 12;
-				hours = (hours) ? hours : 12; // the hour '0' should be '12'
-				minutes = (minutes < 10) ? '0' + minutes : minutes;
-				var strTime = (d.getMonth()+1) + "/" + d.getDate()  + "/"  + d.getFullYear() + ' ' + hours + ':' + minutes + ' ' + ampm;
+            scope.$on("saving-started", function(e) {
+                element.css({"display" : ""});
+                //the actual message is passed through the "title" attribute
+                element.html("<img src='images/ajax-loader.gif' />&nbsp;Please wait...saving data.");
+            });
 
-                element.html(strTime);
-			}
-
-        };
+            scope.$on("loading-complete", function(e) {
+                element.css({"display" : "none"});
+            });
+        }
+    };
 });

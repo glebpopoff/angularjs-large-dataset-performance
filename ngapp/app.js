@@ -10,7 +10,12 @@ angularJSBigDataApp.config(['$routeProvider', '$locationProvider', '$resourcePro
   function ($routeProvider, $locationProvider,$resourceProvider) {
         $routeProvider.
         when('/', {
-            title: 'AngularJS Big Data App | Demo',
+            title: 'AngularJS Big Data App | Large Dataset Demo',
+            templateUrl: '/ngapp/partials/landing.html?' + APP_CACHE_SID,
+            controller: 'HomeCtrl'
+        }).
+        when('/data/:size', {
+            title: 'AngularJS Big Data App | Large Dataset Demo',
             templateUrl: '/ngapp/partials/list.html?' + APP_CACHE_SID,
             controller: 'ListCtrl'
         }).
@@ -22,6 +27,28 @@ angularJSBigDataApp.config(['$routeProvider', '$locationProvider', '$resourcePro
         // use the HTML5 History API
         $locationProvider.html5Mode(true);
 }]);
+
+//loading indicator interceptor (display the directive)
+angularJSBigDataApp.config(function($httpProvider) {
+    $httpProvider.interceptors.push(function($q, $rootScope) {
+        return {
+            'request': function(config) {
+                if (config.method == 'GET')
+                {
+                  $rootScope.$broadcast('loading-started');
+                } else
+                {
+                  $rootScope.$broadcast('saving-started');
+                }
+                return config || $q.when(config);
+            },
+            'response': function(response) {
+                $rootScope.$broadcast('loading-complete');
+                return response || $q.when(response);
+            }
+        };
+    });
+});
 
 //caching id
 var APP_CACHE_SID = (new Date()).getTime();

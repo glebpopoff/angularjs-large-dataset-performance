@@ -1,14 +1,50 @@
 var angularJSBigDataControllers = angular.module('angularJSBigDataControllers', []);
 
 /*
- * Train Station / Homepage Controller
+ * Homepage Controller
  */
-angularJSBigDataControllers.controller('ListCtrl', ['$scope', '$rootScope', 'AppDataService', 'DataShareService', '$location',
-    function ($scope, $rootScope, AppDataService, DataShareService, $location) {
+angularJSBigDataControllers.controller('HomeCtrl', ['$scope', '$location',
+    function ($scope, $location) {
+        window.log('controller', 'HomeCtrl: init..');
+
+        $scope.load10K = function () {
+            window.log('controller', 'Loading 10K dataset demo');
+
+            $location.path('/data/10K');
+        }
+
+        $scope.load100K = function () {
+            window.log('controller', 'Loading 100K dataset demo');
+
+            $location.path('/data/100K');
+        }
+
+        $scope.load1M = function () {
+            window.log('controller', 'Loading 1M dataset demo');
+
+            $location.path('/data/1M');
+        }
+    }
+]);
+
+/*
+ * List Controller 
+ */
+angularJSBigDataControllers.controller('ListCtrl', ['$scope', '$rootScope', 'AppDataService', 'DataShareService', '$routeParams',
+    function ($scope, $rootScope, AppDataService, DataShareService, $routeParams) {
         window.log('controller', 'ListCtrl: init..');
 
-        //call the web service 
-        AppDataService.getData().then(function (response) {
+        var datasetPath = 'data-file-min-10K.json';
+        if ($routeParams.size == '100K')
+        {
+            datasetPath = 'data-file-min-100K.json';
+        } else if ($routeParams.size == '1M')
+        {
+            datasetPath = 'data-file-min-1M.json';
+        } 
+        window.log('controller', 'Dataset Path: ' + datasetPath);
+        //call the web service to load the dataset
+        AppDataService.getData(datasetPath).then(function (response) {
         		if (response && response.data && response.data.length > 0) {
                     window.log('controller', 'ListCtrl: Processing data. Total records: ' + response.data.length);
                     
@@ -32,6 +68,8 @@ angularJSBigDataControllers.controller('ListCtrl', ['$scope', '$rootScope', 'App
                 $scope.performSearch = function () {
                     window.log('controller', 'Searching [Term=' + $scope.searchTerm + ',Use Lodash=' + $scope.useLodash + ',Sort By=' + $scope.sortBy);
                     var timeStart = Date.now();
+                    $scope.hasMoreData = ($scope.entire_dataset.length > $scope.records_per_page) ? true : false;
+
                     if ($scope.searchTerm && $scope.searchTerm.length > 0)
                     {
                         $scope.filtered_data = [];
@@ -116,17 +154,22 @@ angularJSBigDataControllers.controller('ListCtrl', ['$scope', '$rootScope', 'App
 
                 //pagination / see more
                 $scope.paginateResultSet = function () {
-                    window.log('controller', 'ListCtrl: paginate');
-
                     $scope.page_idx += 1;
-
                     var upperBound = $scope.records_per_page * $scope.page_idx;
+                    
+                    window.log('controller', 'ListCtrl: paginate. Page IDX: ' + $scope.page_idx + ', UpperBound: ' + upperBound);
+
                     //contains the first 25 records that will be displayed to the user
-                    $scope.data_records = ($scope.filtered_data.length > upperBound) 
-                                          ? $scope.filtered_data.slice(0, upperBound) : $scope.filtered_data;
-
-
-                    $scope.hasMoreData = ($scope.data_records.length > upperBound) ? true : false;                      
+                    if ($scope.filtered_data && $scope.filtered_data.length > 0)
+                    {
+                        $scope.data_records = ($scope.filtered_data.length > upperBound) 
+                                               ? $scope.filtered_data.slice(0, upperBound) : $scope.filtered_data;
+                    } else
+                    {
+                        $scope.data_records = ($scope.entire_dataset.length > upperBound) 
+                                               ? $scope.entire_dataset.slice(0, upperBound) : $scope.entire_dataset;
+                    }
+                    $scope.hasMoreData = ($scope.total_records > upperBound) ? true : false;                      
                                       
                 };
 
